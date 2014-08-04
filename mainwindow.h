@@ -16,6 +16,9 @@ public:
 public slots:
     void shot();
 
+protected slots:
+    void setPixmap();
+
 private:
     QLabel * mPreview;
     QPushButton * mShotButton;

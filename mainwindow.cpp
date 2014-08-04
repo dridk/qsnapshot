@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mDelaySpinBox = new QSpinBox();
     mSnapWidget   = new SnapshotWidget();
 
+
     QFormLayout * formLayout = new QFormLayout();
     QHBoxLayout * barLayout  = new QHBoxLayout();
     QVBoxLayout * mainLayout = new QVBoxLayout();
@@ -29,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     formLayout->setFormAlignment(Qt::AlignHCenter);
     mShotButton->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum);
     mPreview->setMinimumSize(400,300);
+    mPreview->setScaledContents(true);
 
     barLayout->addWidget(mAboutButton);
     barLayout->addStretch();
@@ -46,8 +48,10 @@ MainWindow::MainWindow(QWidget *parent) :
     setLayout(mainLayout);
 
 
-    connect(mShotButton,SIGNAL(clicked()),
-            this,SLOT(shot()));
+    connect(mShotButton,SIGNAL(clicked()),this,SLOT(shot()));
+    connect(mSnapWidget,SIGNAL(shootted()),this,SLOT(setPixmap()));
+
+
 
 
 }
@@ -62,6 +66,16 @@ void MainWindow::shot()
 
     mSnapWidget->showFullScreen();
     mSnapWidget->snapshot();
+
+
+}
+
+void MainWindow::setPixmap()
+{
+    int w = mPreview->width();
+    int h = mPreview->height();
+
+    mPreview->setPixmap(mSnapWidget->pixmap().scaled(w,h, Qt::KeepAspectRatio));
 
 
 }

@@ -10,6 +10,11 @@ SnapshotWidget::SnapshotWidget(QWidget *parent) :
     mArea = QRect(0,0,100,100);
 }
 
+ QPixmap SnapshotWidget::pixmap() const
+{
+    return mPixmap.copy(mArea);
+}
+
 void SnapshotWidget::snapshot()
 {
 
@@ -49,8 +54,10 @@ void SnapshotWidget::paintEvent(QPaintEvent *event)
 
     if (!mPixmap.isNull())
     {
-        painter.setOpacity(0.4);
         painter.drawPixmap(rect(),mPixmap);
+
+        painter.setBrush(QBrush(QColor(0,0,0,100)));
+        painter.drawRect(rect());
 
     }
 
@@ -61,6 +68,33 @@ void SnapshotWidget::paintEvent(QPaintEvent *event)
 
 void SnapshotWidget::mousePressEvent(QMouseEvent *event)
 {
+
+
+
+
+    // Test all corners
+
+    if (cornerToRect(mArea.topLeft()).contains(event->pos())){
+        mCurrentCorner = Qt::TopLeftCorner;
+        return;
+    }
+
+    if (cornerToRect(mArea.topRight()).contains(event->pos())){
+        mCurrentCorner = Qt::TopRightCorner;
+        return;
+    }
+
+    if (cornerToRect(mArea.bottomRight()).contains(event->pos())){
+        mCurrentCorner = Qt::BottomRightCorner;
+        return;
+    }
+
+    if (cornerToRect(mArea.bottomLeft()).contains(event->pos())){
+        mCurrentCorner = Qt::BottomLeftCorner;
+        return;
+    }
+
+
 
     if (mArea.contains(event->pos()))
     {
@@ -74,6 +108,13 @@ void SnapshotWidget::mousePressEvent(QMouseEvent *event)
 
 
 
+}
+
+void SnapshotWidget::mouseDoubleClickEvent(QMouseEvent *event)
+{
+
+    emit shootted();
+    close();
 
 
 }
@@ -81,6 +122,7 @@ void SnapshotWidget::mousePressEvent(QMouseEvent *event)
 void SnapshotWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     mMode = "";
+    mCurrentCorner = -1;
 
 }
 
@@ -93,8 +135,19 @@ void SnapshotWidget::mouseMoveEvent(QMouseEvent *event)
 
         mArea.moveTo(event->pos()- mDiff);
 
-
     }
+
+    if (mCurrentCorner == Qt::BottomRightCorner)
+        mArea.setBottomRight(event->pos());
+
+    if (mCurrentCorner == Qt::TopRightCorner)
+        mArea.setTopRight(event->pos());
+
+    if (mCurrentCorner == Qt::TopLeftCorner)
+        mArea.setTopLeft(event->pos());
+
+    if (mCurrentCorner == Qt::BottomLeftCorner)
+        mArea.setBottomLeft(event->pos());
 
     update();
 
@@ -104,21 +157,30 @@ void SnapshotWidget::mouseMoveEvent(QMouseEvent *event)
 void SnapshotWidget::drawAreaBox(QPainter &painter)
 {
 
+    painter.setOpacity(1);
+    painter.drawPixmap(mArea, mPixmap, mArea);
 
-    painter.drawRect(mArea);
+    QFont font = QFont();
+    font.setPixelSize(11);
+    painter.setFont(font);
+
+    QRect textRect = QRect(0,0,60,14);
+    textRect.moveCenter(mArea.center());
+    painter.setBrush(QBrush(Qt::white));
+    painter.drawRect(textRect);
+    painter.drawText(textRect, Qt::AlignCenter,QString("%1x%2").arg(mArea.width()).arg(mArea.height()));
 
 
     QList<QPoint> points;
     points<<mArea.topLeft()<<mArea.topRight()<<mArea.bottomLeft()<<mArea.bottomRight();
 
+    painter.setBrush(QBrush("#ecf2f9"));
+    painter.setPen(QPen("#3465a4"));
 
-    foreach (const QPoint p, points){
-
-
+    foreach (const QPoint p, points)
         painter.drawRect(cornerToRect(p));
 
 
-    }
 
 
 
@@ -126,14 +188,13 @@ void SnapshotWidget::drawAreaBox(QPainter &painter)
 
 QRect SnapshotWidget::cornerToRect(const QPoint &p, int size)
 {
+    int dx = p.x() == mArea.x() ? -size : size;
+    int dy = p.y() == mArea.y() ? -size : size;
 
 
-    QRect rect = QRect(0,0, size, size);
-
-    rect.moveTo(p - rect.center());
-
+    QRect rect = QRect(0,0, size*2, size*2);
+    QPoint pos(p - rect.center());
+    pos -= QPoint(dx,dy);
+    rect.moveTo(pos);
     return rect;
-
-
-
 }
