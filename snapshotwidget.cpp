@@ -194,7 +194,7 @@ QRect SnapshotWidget::cornerToRect(const QPoint &p, int size)
 
     QRect rect = QRect(0,0, size*2, size*2);
     QPoint pos(p - rect.center());
-    pos -= QPoint(dx,dy);
+    pos -= QPoint(dx+1,dy+1);
     rect.moveTo(pos);
     return rect;
 }

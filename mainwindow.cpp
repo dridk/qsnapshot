@@ -75,6 +75,7 @@ void MainWindow::setPixmap()
     int h = mPreview->height();
 
     mPreview->setOriginalPixmap(mSnapWidget->pixmap());
+    mPreview->setFocus();
 
 
 }
