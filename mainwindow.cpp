@@ -4,7 +4,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent)
 {
 
-    mPreview      = new QLabel();
+    mPreview      = new PreviewWidget();
     mShotButton   = new QPushButton(tr("Take a new screenshot"));
     mSaveButton   = new QPushButton(tr("Save as ..."));
     mCopyButton   = new QPushButton(tr("Copy"));
@@ -30,7 +30,6 @@ MainWindow::MainWindow(QWidget *parent) :
     formLayout->setFormAlignment(Qt::AlignHCenter);
     mShotButton->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum);
     mPreview->setMinimumSize(400,300);
-    mPreview->setScaledContents(true);
 
     barLayout->addWidget(mAboutButton);
     barLayout->addStretch();
@@ -75,7 +74,7 @@ void MainWindow::setPixmap()
     int w = mPreview->width();
     int h = mPreview->height();
 
-    mPreview->setPixmap(mSnapWidget->pixmap().scaled(w,h, Qt::KeepAspectRatio));
+    mPreview->setOriginalPixmap(mSnapWidget->pixmap());
 
 
 }

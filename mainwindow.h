@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QtWidgets>
 #include "snapshotwidget.h"
-
+#include "previewwidget.h"
 class MainWindow : public QWidget
 {
     Q_OBJECT
@@ -20,7 +20,7 @@ protected slots:
     void setPixmap();
 
 private:
-    QLabel * mPreview;
+    PreviewWidget * mPreview;
     QPushButton * mShotButton;
     QPushButton * mSaveButton;
     QPushButton * mCopyButton;
