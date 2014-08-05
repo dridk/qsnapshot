@@ -6,33 +6,28 @@
 #include <QLabel>
 #include <QMouseEvent>
 #include <QPainter>
+#include "abstractsnapshotwidget.h"
 
-class SnapshotWidget : public QWidget
+class AreaSnapeShotWidget : public AbstractSnapshotWidget
 {
     Q_OBJECT
 public:
-    explicit SnapshotWidget(QWidget *parent = 0);
+    explicit AreaSnapeShotWidget(QWidget *parent = 0);
+     virtual QPixmap screenshot() const;
 
-     QPixmap pixmap() const;
-
-public slots:
-    void snapshot();
 
 protected:
     void paintEvent(QPaintEvent * event);
     void mousePressEvent(QMouseEvent * event);
-    void mouseDoubleClickEvent(QMouseEvent * event);
     void mouseReleaseEvent(QMouseEvent * event);
     void mouseMoveEvent(QMouseEvent * event);
 
     void drawAreaBox(QPainter& painter);
     QRect cornerToRect(const QPoint& p, int size=4);
 
-signals:
-    void shootted();
+
 
 private:
-    QPixmap mPixmap;
     QRect mArea;
     QString mMode;
     QPoint mDiff;

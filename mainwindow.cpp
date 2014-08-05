@@ -12,7 +12,10 @@ MainWindow::MainWindow(QWidget *parent) :
     mAboutButton  = new QPushButton(tr("About"));
     mModeComboBox = new QComboBox();
     mDelaySpinBox = new QSpinBox();
-    mSnapWidget   = new SnapshotWidget();
+
+
+    addSnapMode(new AreaSnapeShotWidget());
+    addSnapMode(new FullSnapShotWidget());
 
 
     QFormLayout * formLayout = new QFormLayout();
@@ -47,8 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setLayout(mainLayout);
 
 
-    connect(mShotButton,SIGNAL(clicked()),this,SLOT(shot()));
-    connect(mSnapWidget,SIGNAL(shootted()),this,SLOT(setPixmap()));
+    connect(mShotButton,SIGNAL(clicked()),this,SLOT(takeScreenshot()));
 
 
 
@@ -59,22 +61,38 @@ MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::shot()
+void MainWindow::takeScreenshot()
 {
 
 
-    mSnapWidget->showFullScreen();
-    mSnapWidget->snapshot();
+    int index = mModeComboBox->currentIndex();
+    AbstractSnapshotWidget * snapWidget = mSnapWidgets.at(index);
+
+    snapWidget->showFullScreen();
+    snapWidget->take();
 
 
 }
 
-void MainWindow::setPixmap()
+void MainWindow::addSnapMode(AbstractSnapshotWidget *widget)
 {
-    int w = mPreview->width();
-    int h = mPreview->height();
 
-    mPreview->setOriginalPixmap(mSnapWidget->pixmap());
+    mSnapWidgets.append(widget);
+    mModeComboBox->addItem(widget->objectName());
+    connect(widget,SIGNAL(taken()),this,SLOT(setPreview()));
+
+
+
+
+}
+
+void MainWindow::setPreview()
+{
+
+    AbstractSnapshotWidget * snapWidget = qobject_cast<AbstractSnapshotWidget*>(sender());
+
+
+    mPreview->setOriginalPixmap(snapWidget->screenshot());
     mPreview->setFocus();
 
 

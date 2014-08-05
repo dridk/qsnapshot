@@ -14,10 +14,14 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    snapshotwidget.cpp \
-    previewwidget.cpp
+    previewwidget.cpp \
+    abstractsnapshotwidget.cpp \
+    areasnapshotwidget.cpp \
+    fullsnapshotwidget.cpp
 
 HEADERS  += mainwindow.h \
-    snapshotwidget.h \
-    previewwidget.h
+    previewwidget.h \
+    abstractsnapshotwidget.h \
+    areasnapshotwidget.h \
+    fullsnapshotwidget.h
 

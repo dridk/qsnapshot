@@ -3,7 +3,8 @@
 
 #include <QMainWindow>
 #include <QtWidgets>
-#include "snapshotwidget.h"
+#include "areasnapshotwidget.h"
+#include "fullsnapshotwidget.h"
 #include "previewwidget.h"
 class MainWindow : public QWidget
 {
@@ -14,10 +15,14 @@ public:
     ~MainWindow();
 
 public slots:
-    void shot();
+    void takeScreenshot();
+
+
+protected :
+    void addSnapMode(AbstractSnapshotWidget * widget);
 
 protected slots:
-    void setPixmap();
+    void setPreview();
 
 private:
     PreviewWidget * mPreview;
@@ -28,7 +33,8 @@ private:
     QPushButton * mAboutButton;
     QComboBox * mModeComboBox;
     QSpinBox * mDelaySpinBox;
-    SnapshotWidget * mSnapWidget;
+
+    QList<AbstractSnapshotWidget*> mSnapWidgets;
 
 
 };
