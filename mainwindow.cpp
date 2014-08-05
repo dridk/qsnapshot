@@ -1,5 +1,15 @@
 #include "mainwindow.h"
 #include <QDebug>
+
+#include <QtX11Extras/QX11Info>
+
+#include <X11/X.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xatom.h>
+
+#include <QDesktopWidget>
+
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent)
 {
@@ -16,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     addSnapMode(new AreaSnapeShotWidget());
     addSnapMode(new FullSnapShotWidget());
+    addSnapMode(new WinSnapshotWidget());
 
 
     QFormLayout * formLayout = new QFormLayout();
@@ -65,11 +76,33 @@ void MainWindow::takeScreenshot()
 {
 
 
+    QDesktopWidget * desktop = new QDesktopWidget;
+
+    Window root;
+    Window parent;
+    Window *children;
+    Window *child;
+    Window current = desktop->winId();
+    unsigned int i;
+    unsigned int nchildren;
+
+
+    XQueryTree(QX11Info::display(),current,&root,&parent,&children,&nchildren);
+
+
+    qDebug()<<children[10];
+
+
+
+
     int index = mModeComboBox->currentIndex();
     AbstractSnapshotWidget * snapWidget = mSnapWidgets.at(index);
 
-    snapWidget->showFullScreen();
+    //    snapWidget->showFullScreen();
+
     snapWidget->take();
+
+ mPreview->setOriginalPixmap(qGuiApp->primaryScreen()->grabWindow(WId(children[30])));
 
 
 }
@@ -86,6 +119,15 @@ void MainWindow::addSnapMode(AbstractSnapshotWidget *widget)
 
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+
+    if (event->key() == Qt::Key_Return)
+        takeScreenshot();
+
+
+}
+
 void MainWindow::setPreview()
 {
 
@@ -94,6 +136,25 @@ void MainWindow::setPreview()
 
     mPreview->setOriginalPixmap(snapWidget->screenshot());
     mPreview->setFocus();
+
+
+}
+
+void MainWindow::test(QWindow *w)
+{
+
+
+    Window ** list;
+    unsigned int total =0;
+    XQueryTree(QX11Info::display(),0,NULL,NULL,list,&total);
+
+
+
+
+
+
+
+
 
 
 }

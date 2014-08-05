@@ -3,8 +3,10 @@
 
 #include <QMainWindow>
 #include <QtWidgets>
+#include <QKeyEvent>
 #include "areasnapshotwidget.h"
 #include "fullsnapshotwidget.h"
+#include "winsnapshotwidget.h"
 #include "previewwidget.h"
 class MainWindow : public QWidget
 {
@@ -20,9 +22,11 @@ public slots:
 
 protected :
     void addSnapMode(AbstractSnapshotWidget * widget);
+    void keyPressEvent(QKeyEvent * event);
 
 protected slots:
     void setPreview();
+    void test(QWindow * w);
 
 private:
     PreviewWidget * mPreview;

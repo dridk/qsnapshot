@@ -45,6 +45,7 @@ void AreaSnapeShotWidget::mousePressEvent(QMouseEvent *event)
 
     // Test all corners
 
+
     if (cornerToRect(mArea.topLeft()).contains(event->pos())){
         mCurrentCorner = Qt::TopLeftCorner;
         return;
@@ -73,6 +74,9 @@ void AreaSnapeShotWidget::mousePressEvent(QMouseEvent *event)
     }
 
 
+    //    setCursorFromPos(event->pos());
+
+
 }
 
 
@@ -81,10 +85,9 @@ void AreaSnapeShotWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     mMode = "";
     mCurrentCorner = -1;
-    if (mArea.contains(event->pos()))
-        setCursor(Qt::OpenHandCursor);
-    else
-        setCursor(Qt::CrossCursor);
+    setCursor(Qt::CrossCursor);
+
+    //    setCursorFromPos(event->pos());
 
 
 }
@@ -93,32 +96,35 @@ void AreaSnapeShotWidget::mouseMoveEvent(QMouseEvent *event)
 {
 
 
-    if (mArea.contains(event->pos() ))
-        setCursor(Qt::OpenHandCursor);
-
-    else
-        setCursor(Qt::CrossCursor);
 
     if (mMode == "move") {
 
-        setCursor(	Qt::ClosedHandCursor	);
         mArea.moveTo(event->pos()- mDiff);
 
     }
 
-    if (mCurrentCorner == Qt::BottomRightCorner)
-        mArea.setBottomRight(event->pos());
+    else {
 
-    if (mCurrentCorner == Qt::TopRightCorner)
-        mArea.setTopRight(event->pos());
+        if (mCurrentCorner == Qt::BottomRightCorner)
+            mArea.setBottomRight(event->pos());
 
-    if (mCurrentCorner == Qt::TopLeftCorner)
-        mArea.setTopLeft(event->pos());
+        if (mCurrentCorner == Qt::TopRightCorner)
+            mArea.setTopRight(event->pos());
 
-    if (mCurrentCorner == Qt::BottomLeftCorner)
-        mArea.setBottomLeft(event->pos());
+        if (mCurrentCorner == Qt::TopLeftCorner)
+            mArea.setTopLeft(event->pos());
 
+        if (mCurrentCorner == Qt::BottomLeftCorner)
+            mArea.setBottomLeft(event->pos());
+
+
+
+    }
+
+
+    setCursorFromPos(event->pos());
     update();
+
 
 
 }
@@ -166,4 +172,40 @@ QRect AreaSnapeShotWidget::cornerToRect(const QPoint &p, int size)
     pos -= QPoint(dx+1,dy+1);
     rect.moveTo(pos);
     return rect;
+}
+
+void AreaSnapeShotWidget::setCursorFromPos(const QPoint &pos)
+{
+
+
+    if ((mArea.contains(pos)) && (mMode =="move") ){
+        setCursor(Qt::OpenHandCursor);
+        return;
+    }
+
+    if (cornerToRect(mArea.topLeft()).contains(pos)){
+        setCursor(Qt::SizeFDiagCursor);
+        return;
+    }
+
+
+    if (cornerToRect(mArea.topRight()).contains(pos)){
+        setCursor(Qt::SizeBDiagCursor);
+        return;
+    }
+
+    if (cornerToRect(mArea.bottomRight()).contains(pos)){
+        setCursor(Qt::SizeFDiagCursor);
+        return;
+    }
+
+
+    if (cornerToRect(mArea.bottomLeft()).contains(pos)){
+        setCursor(Qt::SizeBDiagCursor);
+        return;
+    }
+
+    setCursor(Qt::CrossCursor);
+
+
 }

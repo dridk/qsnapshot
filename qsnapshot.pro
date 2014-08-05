@@ -4,7 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui x11extras
+LIBS = -lX11
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,11 +19,13 @@ SOURCES += main.cpp\
     previewwidget.cpp \
     abstractsnapshotwidget.cpp \
     areasnapshotwidget.cpp \
-    fullsnapshotwidget.cpp
+    fullsnapshotwidget.cpp \
+    winsnapshotwidget.cpp
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
     abstractsnapshotwidget.h \
     areasnapshotwidget.h \
-    fullsnapshotwidget.h
+    fullsnapshotwidget.h \
+    winsnapshotwidget.h
 

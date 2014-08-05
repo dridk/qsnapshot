@@ -23,7 +23,9 @@ protected:
     void mouseMoveEvent(QMouseEvent * event);
 
     void drawAreaBox(QPainter& painter);
-    QRect cornerToRect(const QPoint& p, int size=4);
+    QRect cornerToRect(const QPoint& p, int size=5);
+
+   void setCursorFromPos(const QPoint& pos);
 
 
 
