@@ -9,11 +9,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 
     mPreview      = new PreviewWidget();
-    mShotButton   = new QPushButton(tr("Take a new screenshot"));
-    mSaveButton   = new QPushButton(tr("Save as ..."));
-    mCopyButton   = new QPushButton(tr("Copy"));
-    mSendButton   = new QPushButton(tr("Send to .."));
-    mAboutButton  = new QPushButton(tr("About"));
+    mShotButton   = new QPushButton(QIcon(":icons/slr_camera.png"),tr("Take a new screenshot"));
+    mSaveButton   = new QPushButton(QIcon(":icons/save_as.png"),tr("Save as ..."));
+    mCopyButton   = new QPushButton(QIcon(":icons/copy.png"),tr("Copy"));
+    mSendButton   = new QPushButton(QIcon(":icons/send_file-26.png"),tr("Send to .."));
+    mAboutButton  = new QPushButton(QIcon(":icons/slr_camera.png"),tr("About"));
     mModeComboBox = new QComboBox();
     mDelaySpinBox = new QSpinBox();
 
@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setLayout(mainLayout);
 
 
-    connect(mShotButton,SIGNAL(clicked()),this,SLOT(takeScreenshot()));
+    connect(mShotButton,SIGNAL(clicked()),this,SLOT(waitAndTakeScreenshot()));
     connect(mSaveButton,SIGNAL(clicked()),this,SLOT(saveAs()));
     connect(mCopyButton,SIGNAL(clicked()),this,SLOT(copy()));
 
@@ -72,6 +72,12 @@ MainWindow::~MainWindow()
     delete mAboutButton;
     delete mModeComboBox;
     delete mDelaySpinBox;
+}
+
+void MainWindow::waitAndTakeScreenshot()
+{
+
+    QTimer::singleShot(mDelaySpinBox->value()*1000,this,SLOT(takeScreenshot()));
 }
 
 void MainWindow::takeScreenshot()

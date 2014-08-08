@@ -25,3 +25,6 @@ HEADERS  += mainwindow.h \
     areasnapshotwidget.h \
     fullsnapshotwidget.h
 
+RESOURCES += \
+    icons.qrc
+

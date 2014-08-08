@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QtWidgets>
+#include <QTimer>
 #include "areasnapshotwidget.h"
 #include "fullsnapshotwidget.h"
 #include "previewwidget.h"
@@ -15,6 +16,7 @@ public:
     ~MainWindow();
 
 public slots:
+    void waitAndTakeScreenshot();
     void takeScreenshot();
     void saveAs();
     void copy();
@@ -35,9 +37,7 @@ private:
     QPushButton * mAboutButton;
     QComboBox * mModeComboBox;
     QSpinBox * mDelaySpinBox;
-
     QList<AbstractSnapshotWidget*> mSnapWidgets;
-
 
 };
 
