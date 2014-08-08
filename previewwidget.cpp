@@ -1,18 +1,27 @@
 #include "previewwidget.h"
 #include <QDrag>
-#include <QMimeData>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 #include <QFileInfo>
 #include <QDebug>
+#include <QStandardPaths>
 
 PreviewWidget::PreviewWidget(QWidget *parent) :
     QLabel(parent)
 {
 
+
+    mDrag = new QDrag(this);
+    mMimeData = new QMimeData;
     setAlignment(Qt::AlignCenter);
     setFocus();
 
+}
+
+PreviewWidget::~PreviewWidget()
+{
+    delete mDrag;
+    delete mMimeData;
 }
 
 void PreviewWidget::resizeEvent(QResizeEvent * event)
@@ -47,30 +56,41 @@ void PreviewWidget::setOriginalPixmap(const QPixmap &pix)
 
 }
 
+const QPixmap &PreviewWidget::originalPixmap() const
+{
+    return mOriginalPixmap;
+}
+
 void PreviewWidget::mousePressEvent(QMouseEvent *event)
 {
 
     if (event->button() == Qt::LeftButton){
 
-        QDrag *drag = new QDrag(this);
-        QMimeData *mimeData = new QMimeData;
 
-        QFile file("screenshot.png");
-        QFileInfo info(file);
+        QString path = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
 
-        qDebug()<<info.absoluteFilePath();
+        QFile file(path + QDir::separator()+ "screenshot.png");
 
-        qDebug()<<mOriginalPixmap.save(&file);
-        file.close();
+
+        qDebug()<<mOriginalPixmap.save(&file,"PNG");
+
+        qDebug()<<file.fileName();
+
+
+        qDebug()<<QFile::exists(file.fileName());
+
         QList<QUrl> urls;
-        qDebug()<<info.absoluteFilePath();
-        urls.append(QUrl::fromLocalFile(info.absoluteFilePath()));
-        mimeData->setUrls(urls);
-        drag->setMimeData(mimeData);
-        drag->setPixmap(mOriginalPixmap);
+        urls.append(QUrl::fromLocalFile(file.fileName()));
+
+        file.close();
+
+        mMimeData->setUrls(urls);
+        mDrag->setMimeData(mMimeData);
+        mDrag->setPixmap(mOriginalPixmap);
 
 
-        Qt::DropAction dropAction = drag->exec();
+        mDrag->exec();
+
 
     }
 

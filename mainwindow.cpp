@@ -1,5 +1,9 @@
 #include "mainwindow.h"
 #include <QDebug>
+#include <QFileDialog>
+#include <QClipboard>
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QWidget(parent)
 {
@@ -51,14 +55,23 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     connect(mShotButton,SIGNAL(clicked()),this,SLOT(takeScreenshot()));
-
-
+    connect(mSaveButton,SIGNAL(clicked()),this,SLOT(saveAs()));
+    connect(mCopyButton,SIGNAL(clicked()),this,SLOT(copy()));
 
 
 }
 
 MainWindow::~MainWindow()
 {
+
+    delete mPreview;
+    delete mShotButton;
+    delete mSaveButton;
+    delete mCopyButton;
+    delete mSendButton;
+    delete mAboutButton;
+    delete mModeComboBox;
+    delete mDelaySpinBox;
 }
 
 void MainWindow::takeScreenshot()
@@ -70,6 +83,29 @@ void MainWindow::takeScreenshot()
 
     snapWidget->showFullScreen();
     snapWidget->take();
+
+
+}
+
+void MainWindow::saveAs()
+{
+
+    QString filename = QFileDialog::getSaveFileName(this,tr("Save Screenshot"),"", tr("Image (*.png)"));
+    QFile file(filename);
+    mPreview->originalPixmap().save(&file,"PNG");
+    file.close();
+
+
+
+}
+
+void MainWindow::copy()
+{
+
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setPixmap(mPreview->originalPixmap());
+
+
 
 
 }

@@ -16,6 +16,8 @@ public:
 
 public slots:
     void takeScreenshot();
+    void saveAs();
+    void copy();
 
 
 protected :
