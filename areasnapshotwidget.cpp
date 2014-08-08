@@ -8,11 +8,12 @@ AreaSnapeShotWidget::AreaSnapeShotWidget(QWidget *parent) :
     AbstractSnapshotWidget(parent)
 {
 
-    mArea = QRect(0,0,100,100);
+
 
     setObjectName("Area mode");
 
     setMouseTracking(true);
+    mCurrentCorner = -1;
 
 
 
@@ -20,7 +21,7 @@ AreaSnapeShotWidget::AreaSnapeShotWidget(QWidget *parent) :
 
 QPixmap AreaSnapeShotWidget::screenshot() const
 {
-    return screen().copy(mArea);
+    return screen().copy(mArea.normalized());
 
 }
 
@@ -36,6 +37,8 @@ void AreaSnapeShotWidget::paintEvent(QPaintEvent *event)
     painter.setBrush(QBrush(QColor(0,0,0,100)));
     painter.drawRect(rect());
     drawAreaBox(painter);
+
+    drawHeader("ET HO , C4EST LE MESSAGE", painter);
     painter.end();
 
 }
@@ -44,6 +47,8 @@ void AreaSnapeShotWidget::mousePressEvent(QMouseEvent *event)
 {
 
     // Test all corners
+
+
 
     if (cornerToRect(mArea.topLeft()).contains(event->pos())){
         mCurrentCorner = Qt::TopLeftCorner;
@@ -73,6 +78,17 @@ void AreaSnapeShotWidget::mousePressEvent(QMouseEvent *event)
     }
 
 
+
+    if ((event->button() == Qt::LeftButton) && (!mArea.contains(event->pos())))
+    {
+        mArea.setTopLeft(event->pos());
+        mArea.setBottomRight(event->pos());
+        mCurrentCorner = Qt::BottomRightCorner;
+
+    }
+
+
+
 }
 
 
@@ -91,6 +107,7 @@ void AreaSnapeShotWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void AreaSnapeShotWidget::mouseMoveEvent(QMouseEvent *event)
 {
+
 
 
     if (mArea.contains(event->pos() ))
@@ -127,7 +144,10 @@ void AreaSnapeShotWidget::drawAreaBox(QPainter &painter)
 {
 
     painter.setOpacity(1);
-    painter.drawPixmap(mArea, screen(), mArea);
+    painter.drawPixmap(mArea.normalized(), screen(), mArea.normalized());
+
+
+
 
     QFont font = QFont();
     font.setPixelSize(11);
@@ -137,7 +157,7 @@ void AreaSnapeShotWidget::drawAreaBox(QPainter &painter)
     textRect.moveCenter(mArea.center());
     painter.setBrush(QBrush(Qt::white));
     painter.drawRect(textRect);
-    painter.drawText(textRect, Qt::AlignCenter,QString("%1x%2").arg(mArea.width()).arg(mArea.height()));
+    painter.drawText(textRect, Qt::AlignCenter,QString("%1x%2").arg(mArea.normalized().width()).arg(mArea.normalized().height()));
 
 
     QList<QPoint> points;
@@ -145,6 +165,8 @@ void AreaSnapeShotWidget::drawAreaBox(QPainter &painter)
 
     painter.setBrush(QBrush("#ecf2f9"));
     painter.setPen(QPen("#3465a4"));
+
+
 
     foreach (const QPoint p, points)
         painter.drawRect(cornerToRect(p));
@@ -157,8 +179,8 @@ void AreaSnapeShotWidget::drawAreaBox(QPainter &painter)
 
 QRect AreaSnapeShotWidget::cornerToRect(const QPoint &p, int size)
 {
-    int dx = p.x() == mArea.x() ? -size : size;
-    int dy = p.y() == mArea.y() ? -size : size;
+    int dx = p.x() == mArea.normalized().x() ? -size : size;
+    int dy = p.y() == mArea.normalized().y() ? -size : size;
 
 
     QRect rect = QRect(0,0, size*2, size*2);

@@ -58,7 +58,10 @@ void PreviewWidget::mousePressEvent(QMouseEvent *event)
         QFile file("screenshot.png");
         QFileInfo info(file);
 
+        qDebug()<<info.absoluteFilePath();
+
         qDebug()<<mOriginalPixmap.save(&file);
+        file.close();
         QList<QUrl> urls;
         qDebug()<<info.absoluteFilePath();
         urls.append(QUrl::fromLocalFile(info.absoluteFilePath()));

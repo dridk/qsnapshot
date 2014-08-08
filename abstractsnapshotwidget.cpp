@@ -15,6 +15,20 @@ const QPixmap &AbstractSnapshotWidget::screen() const
     return mScreen;
 }
 
+void AbstractSnapshotWidget::drawHeader(const QString &message, QPainter &painter)
+{
+
+    QRect header(0,0,width(), 20);
+    painter.setBrush(QColor("#2ca8c2"));
+    painter.setPen(Qt::NoPen);
+    painter.drawRect(header);
+    int mg = 3;
+    painter.setPen(Qt::white);
+    painter.drawText(header.adjusted(mg,mg,-mg,-mg),Qt::AlignLeft|Qt::AlignVCenter,message);
+
+
+}
+
 void AbstractSnapshotWidget::mouseDoubleClickEvent(QMouseEvent *)
 {
         emit taken();
@@ -37,6 +51,10 @@ void AbstractSnapshotWidget::paintEvent(QPaintEvent *event)
         painter.drawPixmap(rect(),mScreen);
 
     }
+
+
+
+
     painter.end();
 
 }

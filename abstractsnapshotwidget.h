@@ -17,6 +17,8 @@ public:
     virtual QPixmap screenshot() const = 0;
     const QPixmap &screen() const;
 
+    void drawHeader(const QString& message, QPainter& painter);
+
 public slots:
     virtual void take();
 
