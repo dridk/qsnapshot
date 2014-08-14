@@ -1,11 +1,21 @@
 #include "abstractsnapshotwidget.h"
 
 AbstractSnapshotWidget::AbstractSnapshotWidget(QWidget *parent) :
-    QWidget(parent)
+    QGraphicsView(parent)
 {
 
 
-    setCursor(Qt::CrossCursor);
+//    setCursor(Qt::CrossCursor);
+    mScene = new QGraphicsScene;
+    setScene(mScene);
+
+    mBackground = new QGraphicsPixmapItem;
+
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    resize(1000,800);
+    setSceneRect(rect());
 
 
 }
@@ -29,38 +39,34 @@ void AbstractSnapshotWidget::drawHeader(const QString &message, QPainter &painte
 
 }
 
-void AbstractSnapshotWidget::mouseDoubleClickEvent(QMouseEvent *)
-{
-        emit taken();
-        close();
-}
 
 QPixmap AbstractSnapshotWidget::screenshot() const
 {
     return mScreen;
 }
 
-void AbstractSnapshotWidget::paintEvent(QPaintEvent *event)
-{
+//void AbstractSnapshotWidget::paintEvent(QPaintEvent *event)
+//{
 
-    QPainter painter;
-    painter.begin(this);
+//    QPainter painter;
+//    painter.begin(this);
 
-    if (!mScreen.isNull())
-    {
-        painter.drawPixmap(rect(),mScreen);
+//    if (!mScreen.isNull())
+//    {
+//        painter.drawPixmap(rect(),mScreen);
 
-    }
-
-
+//    }
 
 
-    painter.end();
 
-}
+
+//    painter.end();
+
+//}
 
 void AbstractSnapshotWidget::take()
 {
+    qDebug()<<"take";
 
     foreach (QScreen * s, qGuiApp->screens())
     {
@@ -72,6 +78,11 @@ void AbstractSnapshotWidget::take()
 
     }
 
-    update();
+
+
+    mBackground->setPixmap(mScreen);
+
+    mScene->addItem(mBackground);
+
 
 }

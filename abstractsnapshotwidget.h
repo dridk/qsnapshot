@@ -8,8 +8,10 @@
 #include <QScreen>
 #include <QGuiApplication>
 #include <QPainter>
+#include <QGraphicsView>
+#include <QtWidgets>
 
-class AbstractSnapshotWidget : public QWidget
+class AbstractSnapshotWidget : public QGraphicsView
 {
     Q_OBJECT
 public:
@@ -22,12 +24,10 @@ public:
 public slots:
     virtual void take();
 
-protected:
-    void mouseDoubleClickEvent(QMouseEvent*);
 
 
 protected slots:
-    void paintEvent(QPaintEvent * event);
+//    void paintEvent(QPaintEvent * event);
 
 
 
@@ -37,6 +37,8 @@ signals:
 
 private:
     QPixmap mScreen;
+    QGraphicsScene * mScene;
+    QGraphicsPixmapItem * mBackground;
 
 
 };

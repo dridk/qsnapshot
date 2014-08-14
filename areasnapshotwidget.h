@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QMouseEvent>
 #include <QPainter>
+#include "rectareaitem.h"
 #include "abstractsnapshotwidget.h"
 
 class AreaSnapeShotWidget : public AbstractSnapshotWidget
@@ -17,13 +18,13 @@ public:
 
 
 protected:
-    void paintEvent(QPaintEvent * event);
-    void mousePressEvent(QMouseEvent * event);
-    void mouseReleaseEvent(QMouseEvent * event);
-    void mouseMoveEvent(QMouseEvent * event);
+//    void paintEvent(QPaintEvent * event);
+void mousePressEvent(QMouseEvent * event);
+//    void mouseReleaseEvent(QMouseEvent * event);
+//    void mouseMoveEvent(QMouseEvent * event);
 
-    void drawAreaBox(QPainter& painter);
-    QRect cornerToRect(const QPoint& p, int size=4);
+//    void drawAreaBox(QPainter& painter);
+//    QRect cornerToRect(const QPoint& p, int size=4);
 
 
 
@@ -32,6 +33,7 @@ private:
     QString mMode;
     QPoint mDiff;
     int mCurrentCorner;
+    RectAreaItem * mRectItem;
 
 
 };

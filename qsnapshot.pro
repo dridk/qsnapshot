@@ -17,13 +17,15 @@ SOURCES += main.cpp\
     previewwidget.cpp \
     abstractsnapshotwidget.cpp \
     areasnapshotwidget.cpp \
-    fullsnapshotwidget.cpp
+    fullsnapshotwidget.cpp \
+    rectareaitem.cpp
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
     abstractsnapshotwidget.h \
     areasnapshotwidget.h \
-    fullsnapshotwidget.h
+    fullsnapshotwidget.h \
+    rectareaitem.h
 
 RESOURCES += \
     icons.qrc

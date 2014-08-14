@@ -87,7 +87,7 @@ void MainWindow::takeScreenshot()
     int index = mModeComboBox->currentIndex();
     AbstractSnapshotWidget * snapWidget = mSnapWidgets.at(index);
 
-    snapWidget->showFullScreen();
+    snapWidget->show();
     snapWidget->take();
 
 
