@@ -9,10 +9,11 @@ AreaSnapeShotWidget::AreaSnapeShotWidget(QWidget *parent) :
 {
 
     setObjectName("Area mode");
-   setMouseTracking(true);
+    setMouseTracking(true);
     mRectItem = new RectAreaItem;
 
-    connect(this,SIGNAL(screenTaken()),this,SLOT(addAreaItem()));
+    mIsAreaEnable = false;
+
 
 
 }
@@ -21,17 +22,42 @@ QPixmap AreaSnapeShotWidget::subscreen() const
 {
 
     QRect zone = mRectItem->mapToScene(mRectItem->rect()).boundingRect().toRect();
-  return screen().copy(zone);
+    return screen().copy(zone);
 
 }
 
-void AreaSnapeShotWidget::addAreaItem()
+void AreaSnapeShotWidget::mousePressEvent(QMouseEvent *event)
 {
 
-    qDebug()<<"area added" <<rect();
+
+    if (!mIsAreaEnable) {
     mRectItem->setScreen(screen());
-    mRectItem->setRect(rect().adjusted(100,100,-100,-100));
+    mRectItem->setRect(0,0,2,2);
     scene()->addItem(mRectItem);
+    mRectItem->setPos(event->pos());
+
+    mIsAreaEnable = true;
+
+    }
+
+    AbstractSnapshotWidget::mousePressEvent(event);
+
 
 }
+
+void AreaSnapeShotWidget::closeEvent(QCloseEvent *event)
+{
+
+    mIsAreaEnable = false;
+    scene()->removeItem(mRectItem);
+    AbstractSnapshotWidget::closeEvent(event);
+}
+
+void AreaSnapeShotWidget::setAreaEnable(bool active)
+{
+
+mIsAreaEnable = active;
+
+}
+
 

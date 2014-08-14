@@ -17,8 +17,13 @@ public:
      virtual QPixmap subscreen() const;
 
 
+protected:
+
+    void mousePressEvent(QMouseEvent * event);
+    void closeEvent(QCloseEvent * );
+
 protected slots:
-    void addAreaItem();
+    void setAreaEnable(bool active);
 
 protected:
 //    void paintEvent(QPaintEvent * event);
@@ -32,10 +37,7 @@ protected:
 
 
 private:
-    QRect mArea;
-    QString mMode;
-    QPoint mDiff;
-    int mCurrentCorner;
+    bool mIsAreaEnable;
     RectAreaItem * mRectItem;
 
 

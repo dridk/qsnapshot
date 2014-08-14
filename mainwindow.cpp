@@ -130,7 +130,7 @@ void MainWindow::setPreview()
 
     AbstractSnapshotWidget * snapWidget = qobject_cast<AbstractSnapshotWidget*>(sender());
     mPreview->setOriginalPixmap(snapWidget->subscreen());
-    mPreview->setFocus();
+    mShotButton->setFocus();
 
 
 }
