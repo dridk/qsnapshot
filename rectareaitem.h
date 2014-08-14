@@ -16,6 +16,7 @@ public:
 
     void mousePressEvent(QGraphicsSceneMouseEvent*);
     void mouseMoveEvent(QGraphicsSceneMouseEvent*);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent*);
 
 protected:
 
@@ -37,6 +38,7 @@ private:
     int mCornerSize;
     bool mIsMoving;
     int mCurrentCorner;
+    QRectF mOldRect;
 
 
 

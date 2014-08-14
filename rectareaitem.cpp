@@ -23,8 +23,10 @@ void RectAreaItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
 
     painter->setBrush(QBrush(Qt::blue));
 
-    foreach (QRectF corner, corners())
-        painter->drawRect(corner);
+    if (!mIsMoving) {
+        foreach (QRectF corner, corners())
+            painter->drawRect(corner);
+    }
 
 
 
@@ -35,20 +37,23 @@ void RectAreaItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     QPointF mouse = mapFromScene(event->scenePos());
 
-
-    foreach (QRectF corner, corners())
-    {
-        if (corner.contains(mouse))
+    if (event->button() == Qt::LeftButton){
+        mCurrentCorner = 0;
+        foreach (QRectF corner, corners())
         {
-            qDebug()<<"touch";
-            break;
-        }
+            if (corner.contains(mouse))
+            {
+                qDebug()<<"Touch";
+                mIsMoving = true;
+                mOldRect = rect();
+                return;
+            }
 
-        ++mCurrentCorner;
+            ++mCurrentCorner;
+        }
     }
 
-
-
+    mIsMoving = false;
     mCurrentCorner = -1;
 
     QGraphicsRectItem::mousePressEvent(event);
@@ -58,9 +63,47 @@ void RectAreaItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
 
 
+    qDebug()<<event->button();
+    if (mIsMoving)
+    {
+        QPointF mouse = mapFromScene(event->scenePos());
+        QRectF r = mOldRect;
+
+        switch (mCurrentCorner)
+        {
+
+        case 0: r.setTopLeft(mouse);break;
+        case 1: r.setTop(mouse.y());break;
+        case 2: r.setTopRight(mouse);break;
+        case 3: r.setLeft(mouse.x());break;
+       case 4: r.setRight(mouse.x());break;
+        case 5: r.setBottomLeft(mouse);break;
+        case 6: r.setBottomRight(mouse);break;
+       case 7: r.setBottom(mouse.y());break;
 
 
-    QGraphicsRectItem::mouseMoveEvent(event);
+        }
+
+
+
+
+        setRect(r.normalized());
+
+    }
+
+    else
+        QGraphicsRectItem::mouseMoveEvent(event);
+
+}
+
+void RectAreaItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+
+
+    mIsMoving = false;
+    update();
+
+    QGraphicsRectItem::mouseReleaseEvent(event);
 
 }
 
