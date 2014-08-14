@@ -11,7 +11,7 @@ setObjectName("Fullscreen");
 
 }
 
-QPixmap FullSnapShotWidget::screenshot() const
+QPixmap FullSnapShotWidget::subscreen() const
 {
 
 

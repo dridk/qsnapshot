@@ -5,17 +5,16 @@ AbstractSnapshotWidget::AbstractSnapshotWidget(QWidget *parent) :
 {
 
 
-//    setCursor(Qt::CrossCursor);
+    //    setCursor(Qt::CrossCursor);
     mScene = new QGraphicsScene;
     setScene(mScene);
 
-    mBackground = new QGraphicsPixmapItem;
 
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    resize(1000,800);
-    setSceneRect(rect());
+
+   connect(this,SIGNAL(subscreenTaken()),this,SLOT(close()));
 
 
 }
@@ -25,25 +24,42 @@ const QPixmap &AbstractSnapshotWidget::screen() const
     return mScreen;
 }
 
-void AbstractSnapshotWidget::drawHeader(const QString &message, QPainter &painter)
-{
 
-    QRect header(0,0,width(), 20);
-    painter.setBrush(QColor("#2ca8c2"));
-    painter.setPen(Qt::NoPen);
-    painter.drawRect(header);
-    int mg = 3;
-    painter.setPen(Qt::white);
-    painter.drawText(header.adjusted(mg,mg,-mg,-mg),Qt::AlignLeft|Qt::AlignVCenter,message);
+
+
+void AbstractSnapshotWidget::drawBackground(QPainter *p, const QRectF &rect)
+{
+    p->setBrush(Qt::black);
+    p->setPen(Qt::NoPen);
+    p->drawRect(rect);
+
+    p->setOpacity(0.4);
+
+    p->drawPixmap(0,0, mScreen);
+
 
 
 }
 
-
-QPixmap AbstractSnapshotWidget::screenshot() const
+void AbstractSnapshotWidget::resizeEvent(QResizeEvent *event)
 {
-    return mScreen;
+
+    scene()->setSceneRect(QRect(0,0,event->size().width(), event->size().height()));
+
+
+    QGraphicsView::resizeEvent(event);
+
 }
+
+void AbstractSnapshotWidget::mouseDoubleClickEvent(QMouseEvent * event)
+{
+
+    emit subscreenTaken();
+
+}
+
+
+
 
 //void AbstractSnapshotWidget::paintEvent(QPaintEvent *event)
 //{
@@ -64,7 +80,7 @@ QPixmap AbstractSnapshotWidget::screenshot() const
 
 //}
 
-void AbstractSnapshotWidget::take()
+void AbstractSnapshotWidget::takeScreen()
 {
     qDebug()<<"take";
 
@@ -79,10 +95,9 @@ void AbstractSnapshotWidget::take()
     }
 
 
-
-    mBackground->setPixmap(mScreen);
-
-    mScene->addItem(mBackground);
+    resize(mScreen.size());
+    update();
+    emit screenTaken();
 
 
 }

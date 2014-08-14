@@ -16,8 +16,8 @@ public:
     ~MainWindow();
 
 public slots:
-    void waitAndTakeScreenshot();
-    void takeScreenshot();
+    void waitAndTakeScreen();
+    void takeScreen();
     void saveAs();
     void copy();
 

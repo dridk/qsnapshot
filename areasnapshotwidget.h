@@ -14,12 +14,15 @@ class AreaSnapeShotWidget : public AbstractSnapshotWidget
     Q_OBJECT
 public:
     explicit AreaSnapeShotWidget(QWidget *parent = 0);
-     virtual QPixmap screenshot() const;
+     virtual QPixmap subscreen() const;
 
+
+protected slots:
+    void addAreaItem();
 
 protected:
 //    void paintEvent(QPaintEvent * event);
-void mousePressEvent(QMouseEvent * event);
+
 //    void mouseReleaseEvent(QMouseEvent * event);
 //    void mouseMoveEvent(QMouseEvent * event);
 

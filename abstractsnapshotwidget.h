@@ -16,23 +16,25 @@ class AbstractSnapshotWidget : public QGraphicsView
     Q_OBJECT
 public:
     explicit AbstractSnapshotWidget(QWidget *parent = 0);
-    virtual QPixmap screenshot() const = 0;
+    virtual QPixmap subscreen() const = 0;
     const QPixmap &screen() const;
 
-    void drawHeader(const QString& message, QPainter& painter);
+    void drawBackground(QPainter * p, const QRectF& rect);
+    void resizeEvent(QResizeEvent * event);
+
+
+protected:
+    void mouseDoubleClickEvent(QMouseEvent *);
 
 public slots:
-    virtual void take();
-
-
-
-protected slots:
-//    void paintEvent(QPaintEvent * event);
+    virtual void takeScreen();
 
 
 
 signals:
-    void taken();
+    void capture();
+    void screenTaken();
+    void subscreenTaken();
 
 
 private:

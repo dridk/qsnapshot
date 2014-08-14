@@ -13,6 +13,10 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     QRect cornerToRect(const QPoint &p, int size = 4);
 
+    QRectF boundingRect() const;
+
+    void setScreen(const QPixmap& pix);
+
 
     void mousePressEvent(QGraphicsSceneMouseEvent*);
     void mouseMoveEvent(QGraphicsSceneMouseEvent*);
@@ -39,6 +43,7 @@ private:
     bool mIsMoving;
     int mCurrentCorner;
     QRectF mOldRect;
+    QPixmap mScreen;
 
 
 

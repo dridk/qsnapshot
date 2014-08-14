@@ -6,30 +6,54 @@ RectAreaItem::RectAreaItem(QGraphicsItem *parent) :
 {
 
     setFlag(QGraphicsItem::ItemIsMovable, true);
-    setBrush(QBrush(Qt::red));
+    setBrush(QBrush(Qt::white));
     setSelected(true);
     mIsMoving = false;
     mCurrentCorner = -1;
 
     setRect(0,0, 200, 200);
+    mCornerSize = 10;
 
-    mCornerSize = 30;
+
+
+
+
 }
 
 void RectAreaItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 
-    QGraphicsRectItem::paint(painter,option,widget);
+    //    QGraphicsRectItem::paint(painter,option,widget);
 
-    painter->setBrush(QBrush(Qt::blue));
+    painter->setPen(QPen(Qt::white));
+    painter->setOpacity(1);
+
+    QRectF zone = mapToScene(rect()).boundingRect();
+
+    painter->drawPixmap(rect(), mScreen, zone);
 
     if (!mIsMoving) {
+        painter->setPen(QPen(Qt::white));
+        painter->setBrush(QColor(128,128,128,200));
+
         foreach (QRectF corner, corners())
             painter->drawRect(corner);
     }
 
 
 
+}
+
+QRectF RectAreaItem::boundingRect() const
+{
+
+    return QGraphicsRectItem::boundingRect();
+
+}
+
+void RectAreaItem::setScreen(const QPixmap &pix)
+{
+    mScreen = pix;
 }
 
 void RectAreaItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -63,7 +87,6 @@ void RectAreaItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
 
 
-    qDebug()<<event->button();
     if (mIsMoving)
     {
         QPointF mouse = mapFromScene(event->scenePos());
@@ -76,10 +99,10 @@ void RectAreaItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
         case 1: r.setTop(mouse.y());break;
         case 2: r.setTopRight(mouse);break;
         case 3: r.setLeft(mouse.x());break;
-       case 4: r.setRight(mouse.x());break;
+        case 4: r.setRight(mouse.x());break;
         case 5: r.setBottomLeft(mouse);break;
         case 6: r.setBottomRight(mouse);break;
-       case 7: r.setBottom(mouse.y());break;
+        case 7: r.setBottom(mouse.y());break;
 
 
         }
@@ -144,7 +167,7 @@ QRectF RectAreaItem::topMiddleCorner()
 QRectF RectAreaItem::topRightCorner()
 {
     QRectF r = QRectF(0,0, mCornerSize, mCornerSize);
-    r.moveTo(rect().topRight() - QPoint(mCornerSize,0));
+    r.moveTo(rect().topRight() - QPoint(mCornerSize+1,0));
     return r;
 
 }
@@ -160,21 +183,21 @@ QRectF RectAreaItem::middleRightCorner()
 QRectF RectAreaItem::middleLeftCorner()
 {
     QRectF r = QRectF(0,0, mCornerSize, mCornerSize);
-    r.moveTo(rect().right() - mCornerSize, rect().center().y()- mCornerSize/2);
+    r.moveTo(rect().right() - mCornerSize-1, rect().center().y()- mCornerSize/2);
     return r;
 }
 
 QRectF RectAreaItem::bottomLeftCorner()
 {
     QRectF r = QRectF(0,0, mCornerSize, mCornerSize);
-    r.moveTo(rect().left(), rect().bottom() - mCornerSize);
+    r.moveTo(rect().left(), rect().bottom() - mCornerSize-1);
     return r;
 }
 
 QRectF RectAreaItem::bottomMiddleCorner()
 {
     QRectF r = QRectF(0,0, mCornerSize, mCornerSize);
-    r.moveCenter(QPointF(rect().center().x(), rect().bottom()-mCornerSize/2));
+    r.moveCenter(QPointF(rect().center().x(), rect().bottom()-mCornerSize/2 -1));
 
     return r;
 }
@@ -182,7 +205,7 @@ QRectF RectAreaItem::bottomMiddleCorner()
 QRectF RectAreaItem::bottomRightCorner()
 {
     QRectF r = QRectF(0,0, mCornerSize, mCornerSize);
-    r.moveTo(rect().right()-mCornerSize, rect().bottom() - mCornerSize);
+    r.moveTo(rect().right()-mCornerSize-1, rect().bottom() - mCornerSize -1);
     return r;
 }
 

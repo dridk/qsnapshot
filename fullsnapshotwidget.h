@@ -9,7 +9,7 @@ class FullSnapShotWidget : public AbstractSnapshotWidget
 public:
     explicit FullSnapShotWidget(QWidget *parent = 0);
 
-    virtual QPixmap screenshot() const;
+    virtual QPixmap subscreen() const;
 signals:
 
 public slots:

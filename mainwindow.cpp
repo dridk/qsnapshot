@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setLayout(mainLayout);
 
 
-    connect(mShotButton,SIGNAL(clicked()),this,SLOT(waitAndTakeScreenshot()));
+    connect(mShotButton,SIGNAL(clicked()),this,SLOT(waitAndTakeScreen()));
     connect(mSaveButton,SIGNAL(clicked()),this,SLOT(saveAs()));
     connect(mCopyButton,SIGNAL(clicked()),this,SLOT(copy()));
 
@@ -74,21 +74,22 @@ MainWindow::~MainWindow()
     delete mDelaySpinBox;
 }
 
-void MainWindow::waitAndTakeScreenshot()
+void MainWindow::waitAndTakeScreen()
 {
 
-    QTimer::singleShot(mDelaySpinBox->value()*1000,this,SLOT(takeScreenshot()));
+    QTimer::singleShot(mDelaySpinBox->value()*1000,this,SLOT(takeScreen()));
 }
 
-void MainWindow::takeScreenshot()
+void MainWindow::takeScreen()
 {
 
 
     int index = mModeComboBox->currentIndex();
     AbstractSnapshotWidget * snapWidget = mSnapWidgets.at(index);
 
-    snapWidget->show();
-    snapWidget->take();
+
+    snapWidget->showFullScreen();
+    snapWidget->takeScreen();
 
 
 }
@@ -110,10 +111,6 @@ void MainWindow::copy()
 
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setPixmap(mPreview->originalPixmap());
-
-
-
-
 }
 
 void MainWindow::addSnapMode(AbstractSnapshotWidget *widget)
@@ -121,7 +118,7 @@ void MainWindow::addSnapMode(AbstractSnapshotWidget *widget)
 
     mSnapWidgets.append(widget);
     mModeComboBox->addItem(widget->objectName());
-    connect(widget,SIGNAL(taken()),this,SLOT(setPreview()));
+    connect(widget,SIGNAL(subscreenTaken()),this,SLOT(setPreview()));
 
 
 
@@ -132,9 +129,7 @@ void MainWindow::setPreview()
 {
 
     AbstractSnapshotWidget * snapWidget = qobject_cast<AbstractSnapshotWidget*>(sender());
-
-
-    mPreview->setOriginalPixmap(snapWidget->screenshot());
+    mPreview->setOriginalPixmap(snapWidget->subscreen());
     mPreview->setFocus();
 
 
